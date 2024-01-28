@@ -64,9 +64,7 @@ public class PixicScreen extends JPanel {
 		
         for (int x = 0; x < screenPixics.sizeX(); x++) {
         	for (int y = 0; y < screenPixics.sizeY(); y++) {
-        		// g.setColor(screenPixels.get(x, y).getColor());
-        		Random r = new Random();
-        		g.setColor(new Color(r.nextInt(0, 256), r.nextInt(0, 256), r.nextInt(0, 256)));
+        		g.setColor(screenPixics.get(x, y).getColor());
         		g.fillRect(x * pixicScale, y * pixicScale, pixicScale, pixicScale);
         	}
         }

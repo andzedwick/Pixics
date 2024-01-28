@@ -2,6 +2,7 @@ package com.pixics.main;
 
 import com.pixics.graphics.PixicScreen;
 import com.pixics.graphics.PixicWindow;
+import com.pixics.objects.Sand;
 
 public class Application {
 	
@@ -15,6 +16,8 @@ public class Application {
 	
 	public Application() {
 		PixicWindow window = new PixicWindow(PixicScreen.getMonitorWidth(), PixicScreen.getMonitorHeight(), FRAME_TITLE, 10);
-		
+		PixicScreen screen = window.getPixicScreen();
+		screen.fill(new Sand(217, 166, 32));
+		screen.repaint();
 	}
 }

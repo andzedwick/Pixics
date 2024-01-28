@@ -8,4 +8,11 @@ public class Sand extends PixicObject {
 		super(c, PixicObjectType.SAND);
 	}
 
+	public Sand(int r, int g, int b) {
+		super(r, g, b, PixicObjectType.SAND);
+	}
+	
+	public Sand(int r, int g, int b, int a) {
+		super(r, g, b, a, PixicObjectType.SAND);
+	}
 }

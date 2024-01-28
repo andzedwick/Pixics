@@ -62,9 +62,7 @@ public class PixelScreen extends JPanel {
 		
         for (int x = 0; x < screenPixels.sizeX(); x++) {
         	for (int y = 0; y < screenPixels.sizeY(); y++) {
-        		// g.setColor(screenPixels.get(x, y).getColor());
-        		Random r = new Random();
-        		g.setColor(new Color(r.nextInt(0, 256), r.nextInt(0, 256), r.nextInt(0, 256)));
+        		g.setColor(screenPixels.get(x, y).getColor());
         		g.fillRect(x * pixelScale, y * pixelScale, pixelScale, pixelScale);
         	}
         }

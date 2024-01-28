@@ -15,6 +15,16 @@ public class PixicObject extends Pixel {
 		this.objectType = objectType;
 	}
 	
+	public PixicObject(int r, int g, int b, PixicObjectType objectType) {
+		super(r, g, b);
+		this.objectType = objectType;
+	}
+	
+	public PixicObject(int r, int g, int b, int a, PixicObjectType objectType) {
+		super(r, g, b, a);
+		this.objectType = objectType;
+	}
+	
 	public void setObjectType(PixicObjectType objectType) {
 		this.objectType = objectType;
 	}
