@@ -1,30 +1,34 @@
 package com.pixics.objects;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import com.pixics.main.Logger;
 import com.pixics.graphics.Pixel;
+import com.pixics.graphics.PixicScreen;
 
 public class PixicArray {
 	private Logger log = new Logger();
 	private List<PixicObject> array = null;
+	private PixicScreen parentScreen = null;
 	
-	public PixicArray(int size) {
+	public PixicArray(PixicScreen parentScreen, int size, int locX) {
+		this.parentScreen = parentScreen;
 		array = Collections.synchronizedList(new ArrayList<PixicObject>(size));
-		initialize(size);
+		initialize(size, locX);
 	}
 	
-	public synchronized void setPixic(PixicObject p, int loc) {
+	public synchronized void setPixic(int loc, PixicObject p) {
 		if (loc >= 0 && loc <= array.size()) {
 			array.set(loc, p);
 		}
 	}
 	
-	public synchronized void setPixics(PixicObject[] pixelArray) {
+	public synchronized void setPixics(PixicObject[] pixelArray, int locX) {
 		if (pixelArray == null) {
-			fill(new PixicObject(Pixel.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE));
+			fill(Pixel.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE, locX);
 			return;
 		}
 		
@@ -52,9 +56,9 @@ public class PixicArray {
 	 * 
 	 * @param p
 	 */
-	public synchronized void fill(PixicObject p) {
+	public synchronized void fill(Color c, PixicObjectType objectType, int locX) {
 		for (int i = 0; i < array.size(); i++) {
-			array.set(i, new PixicObject(p.getColor(), p.getObjectType()));
+			array.set(i, PixicObjectFactory.createGenericPixicObject(parentScreen, c, objectType, locX, i));
 		}
 	}
 	
@@ -62,7 +66,7 @@ public class PixicArray {
 		return array.size();
 	}
 	
-	public synchronized void resize(int newSize, boolean suppressWarning) {
+	public synchronized void resize(int newSize, int xLoc, boolean suppressWarning) {
 		if (newSize == array.size()) return;
 		if (newSize < array.size()) {
 			if (!suppressWarning) {
@@ -73,18 +77,27 @@ public class PixicArray {
 			}
 		} else {
 			for (int i = array.size(); i < newSize; i++) {
-				array.add(new PixicObject(Pixel.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE));
+				array.add(PixicObjectFactory.createGenericPixicObject(parentScreen, PixicObject.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE, xLoc, i));
 			}
 		}
 	}	
 	
-	public synchronized PixicObject[] getArray() {
-		return (PixicObject[]) array.toArray();
+	public synchronized void setParentScreen(PixicScreen parentScreen) {
+		this.parentScreen = parentScreen;
 	}
 	
-	private synchronized void initialize(int arraySize) {
+	public synchronized PixicScreen getParentScreen() {
+		return parentScreen;
+	}
+	
+	public synchronized PixicObject[] getArray() {
+		PixicObject[] pixicArray = new PixicObject[array.size()];
+		return array.toArray(pixicArray);
+	}
+	
+	private synchronized void initialize(int arraySize, int locX) {
 		for (int i = 0; i < arraySize; i++) {
-			array.add(new PixicObject(Pixel.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE));
+			array.add(PixicObjectFactory.createGenericPixicObject(parentScreen, PixicObject.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE, locX, i));
 		}
 	}
 }

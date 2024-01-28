@@ -5,13 +5,14 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
-import java.util.Random;
 
 import javax.swing.JPanel;
 
+import com.pixics.main.Engine;
 import com.pixics.main.Logger;
 import com.pixics.objects.PixicArray2D;
 import com.pixics.objects.PixicObject;
+import com.pixics.objects.PixicObjectType;
 
 public class PixicScreen extends JPanel {
 	
@@ -40,15 +41,151 @@ public class PixicScreen extends JPanel {
 			height = minHeight;
 		}
 		
-		screenPixics = new PixicArray2D(width, height);
+		screenPixics = new PixicArray2D(this, width, height);
 		setScreenSize(width, height);
 		setPixelScale(pixicScale);
 		this.setVisible(true);
 		this.setSize(getActualPixelWidth(), getActualPixelHieght());
+		
+		Engine.getInstance().subscribe(this);
 	}
 	
-	public synchronized void fill(PixicObject p) {
-		screenPixics.fill(p);
+	public PixicObject getPixicObjectRelativeTo(int locX, int locY, int offsetX, int offsetY) {
+		int newLocX = locX + offsetX;
+		int newLocY = locY + offsetY;
+		
+		if (newLocX < 0 || newLocX >= screenPixics.sizeX()) {
+			return null;
+		} else if (newLocY < 0 || newLocY >= screenPixics.sizeY()) {
+			return null;
+		}
+		
+		return screenPixics.get(newLocX, newLocY);
+	}
+	
+	/**
+	 * Takes the location stored in the PixicObject given and uses that on this PixicScreen
+	 * object to find the object being searched for.
+	 * 
+	 * @param obj
+	 * @param offsetX
+	 * @param offsetY
+	 * @return
+	 */
+	public PixicObject getPixicObjectRelativeTo(PixicObject obj, int offsetX, int offsetY) {
+		int newLocX = obj.getLocX() + offsetX;
+		int newLocY = obj.getLocY() + offsetY;
+		
+		if (newLocX < 0 || newLocX >= screenPixics.sizeX()) {
+			return null;
+		} else if (newLocY < 0 || newLocY >= screenPixics.sizeY()) {
+			return null;
+		}
+		
+		return screenPixics.get(newLocX, newLocY);
+	}
+	
+	/**
+	 * Replaces the PixicObject at the new location with the one at the old.
+	 * The PixicObject that was at the old location is now replaced with PixicObject.DEFAULT_OBJECT_TYPE
+	 * 
+	 * @param oldX
+	 * @param oldY
+	 * @param newX
+	 * @param newY
+	 */
+	public synchronized void replacePixic(int oldX, int oldY, int newX, int newY) {
+		screenPixics.setPixic(newX, newY, screenPixics.get(oldX, oldY));
+		screenPixics.setPixic(oldX, oldY, PixicObject.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE);
+	}
+	
+	/**
+	 * Replaces the PixicObject at the new location with the one at the old.
+	 * The PixicObject that was at the old location is now replaced with PixicObject.DEFAULT_OBJECT_TYPE
+	 * 
+	 * Takes the location stored in the PixicObject given and replaces the PixicObject on
+	 * this screen at that location.
+	 * 
+	 * @param obj
+	 * @param offsetX
+	 * @param offsetY
+	 */
+	public synchronized void replacePixic(PixicObject obj, int offsetX, int offsetY) {
+		replacePixic(obj.getLocX(), obj.getLocY(), obj.getLocX() + offsetX, obj.getLocY() + offsetY);
+	}
+	
+	/**
+	 * Swaps PixicObjects at loc1 and loc2
+	 * 
+	 * @param locX1
+	 * @param locY1
+	 * @param locX2
+	 * @param locY2
+	 */
+	public synchronized void swapPixic(int locX1, int locY1, int locX2, int locY2) {
+		PixicObject obj = screenPixics.get(locX1, locY1);
+		
+		screenPixics.setPixic(locX1, locY1, screenPixics.get(locX2, locY2));
+		screenPixics.setPixic(locX2, locY2, obj);
+	}
+	
+	/**
+	 * Swaps PixicObjects at loc1 and loc2
+	 * 
+	 * Takes the location stored in the PixicObject given and swaps the PixicObject on
+	 * this screen at that location.
+	 * 
+	 * @param obj
+	 * @param locX2
+	 * @param locY2
+	 */
+	public synchronized void swapPixic(PixicObject obj, int offsetX, int offsetY) {
+		swapPixic(obj.getLocX(), obj.getLocY(), obj.getLocX() + offsetX, obj.getLocY() + offsetY);
+	}
+	
+	/**
+	 * Swaps PixicObjects at loc1 and loc2
+	 * 
+	 * Takes the locations stored in the PixicObjects given and swaps the PixicObjects on
+	 * this screen at those locations.
+	 * 
+	 * @param obj
+	 * @param obj2
+	 */
+	public synchronized void swapPixic(PixicObject obj, PixicObject obj2) {
+		swapPixic(obj.getLocX(), obj.getLocY(), obj2.getLocX(), obj2.getLocY());
+	}
+	
+	/**
+	 * Generally should only be called by the Engine class
+	 */
+	public void onFrameRender() {
+		PixicObject[][] pixics = screenPixics.getArray();
+		for (int x = 0; x < pixics.length; x++) {
+			for (int y = 0; y < pixics[0].length; y++) {
+				pixics[x][y].onFrameRender();
+			}
+		}
+	}
+	
+	/**
+	 * Generally should only be called by the Engine class
+	 */
+	public void onEngineCycle() {
+		PixicObject[][] pixics = screenPixics.getArray();
+		for (int x = 0; x < pixics.length; x++) {
+			for (int y = 0; y < pixics[0].length; y++) {
+				pixics[x][y].onEngineCycle();
+			}
+		}
+	}
+	
+	public synchronized void fill(Color c, PixicObjectType objectType) {
+		screenPixics.fill(c, objectType);
+	}
+	
+	public synchronized void setPixic(int locX, int locY, Color c, PixicObjectType objectType) {
+		screenPixics.setPixic(locX, locY, c, objectType);
 	}
 	
 	public synchronized void setPixic(int locX, int locY, PixicObject p) {

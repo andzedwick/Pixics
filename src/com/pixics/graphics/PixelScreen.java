@@ -1,14 +1,13 @@
 package com.pixics.graphics;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
-import java.util.Random;
 
 import javax.swing.JPanel;
 
+import com.pixics.main.Engine;
 import com.pixics.main.Logger;
 
 public class PixelScreen extends JPanel {
@@ -43,6 +42,32 @@ public class PixelScreen extends JPanel {
 		setPixelScale(pixelScale);
 		this.setVisible(true);
 		this.setSize(getActualPixelWidth(), getActualPixelHieght());
+		
+		Engine.getInstance().subscribe(this);
+	}
+	
+	/**
+	 * Generally should only be called by the Engine class
+	 */
+	public void onFrameRender() {
+		Pixel[][] pixels = screenPixels.getArray();
+		for (int x = 0; x < pixels.length; x++) {
+			for (int y = 0; y < pixels[0].length; y++) {
+				pixels[x][y].onFrameRender();
+			}
+		}
+	}
+	
+	/**
+	 * Generally should only be called by the Engine class
+	 */
+	public void onEngineCycle() {
+		Pixel[][] pixels = screenPixels.getArray();
+		for (int x = 0; x < pixels.length; x++) {
+			for (int y = 0; y < pixels[0].length; y++) {
+				pixels[x][y].onEngineCycle();
+			}
+		}
 	}
 	
 	public synchronized void fill(Pixel p) {

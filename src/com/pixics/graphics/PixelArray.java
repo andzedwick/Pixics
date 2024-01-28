@@ -78,7 +78,8 @@ public class PixelArray {
 	}	
 	
 	public synchronized Pixel[] getArray() {
-		return (Pixel[]) array.toArray();
+		Pixel[] pixelArray = new Pixel[array.size()];
+		return array.toArray(pixelArray);
 	}
 	
 	private synchronized void initialize(int arraySize) {

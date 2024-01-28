@@ -1,5 +1,6 @@
 package com.pixics.objects;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,13 +8,16 @@ import java.util.List;
 
 import com.pixics.main.Logger;
 import com.pixics.graphics.Pixel;
+import com.pixics.graphics.PixicScreen;
 
 public class PixicArray2D {
 	private Logger log = new Logger();
 	private List<PixicArray> array2d = null;
 	private int sizeY = 0;
+	private PixicScreen parentScreen = null;
 	
-	public PixicArray2D(int sizeX, int sizeY) {
+	public PixicArray2D(PixicScreen parentScreen, int sizeX, int sizeY) {
+		this.parentScreen = parentScreen;
 		if (sizeX < 0) sizeX = 0;
 		if (sizeY < 0) sizeY = 0;
 		array2d = Collections.synchronizedList(new ArrayList<PixicArray>(sizeX));
@@ -26,9 +30,9 @@ public class PixicArray2D {
 	 * 
 	 * @param p
 	 */
-	public synchronized void fill(PixicObject p) {
+	public synchronized void fill(Color c, PixicObjectType objectType) {
 		for (int x = 0; x < array2d.size(); x++) {
-			array2d.get(x).fill(p);
+			array2d.get(x).fill(c, objectType, x);
 		}
 	}
 	
@@ -44,9 +48,24 @@ public class PixicArray2D {
 		return sizeY;
 	}
 	
+	public synchronized void setPixic(int locX, int locY, Color c, PixicObjectType objectType) {
+		if (locX >= 0 && locX < array2d.size() && locY < sizeY) {
+			array2d.get(locX).setPixic(locY, PixicObjectFactory.createGenericPixicObject(parentScreen, c, objectType, locX, locY));
+		}
+	}
+	
+	/**
+	 * Sets the PixicObject at the given location and updates the PixicObject's location
+	 * as well.
+	 * 
+	 * @param locX
+	 * @param locY
+	 * @param p
+	 */
 	public synchronized void setPixic(int locX, int locY, PixicObject p) {
 		if (locX >= 0 && locX < array2d.size() && locY < sizeY) {
-			array2d.get(locX).setPixic(p, locY);
+			array2d.get(locX).setPixic(locY, p);
+			p.setLoc(locX, locY);
 		}
 	}
 	
@@ -63,7 +82,7 @@ public class PixicArray2D {
 		if (sizeX < 0) sizeX = 0;
 		if (sizeX > array2d.size()) {
 			for (int i = array2d.size(); i < sizeX; i++) {
-				array2d.add(new PixicArray(sizeY));
+				array2d.add(new PixicArray(parentScreen, sizeY, i));
 			}
 		} else if (sizeX < array2d.size()) {
 			if (!suppressWarning) {
@@ -85,7 +104,7 @@ public class PixicArray2D {
 		}
 		
 		for (int i = 0; i < array2d.size(); i++) {
-			array2d.get(i).resize(sizeY, true);
+			array2d.get(i).resize(sizeY, i, true);
 		}
 	}
 	
@@ -102,6 +121,14 @@ public class PixicArray2D {
 		return a;
 	}
 	
+	public synchronized void setParentScreen(PixicScreen parentScreen) {
+		this.parentScreen = parentScreen;
+	}
+	
+	public synchronized PixicScreen getParentScreen() {
+		return parentScreen;
+	}
+	
 	/**
 	 * This will reset the entire pixel array, wiping all previous data
 	 * 
@@ -109,7 +136,7 @@ public class PixicArray2D {
 	 */
 	public synchronized void setPixics(PixicObject[][] pixicArray) {
 		if (pixicArray == null) {
-			fill(new PixicObject(Pixel.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE));
+			fill(Pixel.DEFAULT_COLOR, PixicObject.DEFAULT_OBJECT_TYPE);
 			return;
 		}
 		
@@ -121,7 +148,7 @@ public class PixicArray2D {
 	
 	private synchronized void initializeArrays(int sizeY) {
 		for (int i = 0; i < array2d.size(); i++) {
-			array2d.set(i, new PixicArray(sizeY));
+			array2d.set(i, new PixicArray(parentScreen, sizeY, i));
 		}
 	}
 }

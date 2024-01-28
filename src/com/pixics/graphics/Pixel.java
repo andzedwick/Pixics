@@ -58,4 +58,18 @@ public class Pixel {
 	public int getColorA() {
 		return color.getAlpha();
 	}
+	
+	/**
+	 * Note: This is meant to be overridden by child objects
+	 */
+	public void onFrameRender() {
+		
+	}
+	
+	/**
+	 * Note: This is meant to be overridden by child objects
+	 */
+	public void onEngineCycle() {
+		
+	}
 }
