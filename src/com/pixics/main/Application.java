@@ -17,7 +17,7 @@ public class Application {
 	public Application() {
 		PixicWindow window = new PixicWindow(PixicScreen.getMonitorWidth(), PixicScreen.getMonitorHeight(), FRAME_TITLE, 10);
 		PixicScreen screen = window.getPixicScreen();
-		screen.fill(new Sand(217, 166, 32));
+		screen.fill(new Sand(204, 179, 148));
 		screen.repaint();
 	}
 }
