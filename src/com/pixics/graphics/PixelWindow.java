@@ -38,6 +38,14 @@ public class PixelWindow {
 		setupScreen();
 	}
 	
+	public void setPixelScreen(PixelScreen screen) {
+		this.screen = screen;
+	}
+	
+	public PixelScreen getPixelScreen() {
+		return screen;
+	}
+	
 	private void setupFrame() {
 		Image applicationIcon = Toolkit.getDefaultToolkit().getImage("src/assets/Pixics_Icon.png");
 		frame = new JFrame(frameTitle);

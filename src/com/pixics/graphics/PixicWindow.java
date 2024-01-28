@@ -38,6 +38,14 @@ public class PixicWindow {
 		setupScreen();
 	}
 	
+	public void setPixicScreen(PixicScreen screen) {
+		this.screen = screen;
+	}
+	
+	public PixicScreen getPixicScreen() {
+		return screen;
+	}
+	
 	private void setupFrame() {
 		Image applicationIcon = Toolkit.getDefaultToolkit().getImage("src/assets/Pixics_Icon.png");
 		frame = new JFrame(frameTitle);
