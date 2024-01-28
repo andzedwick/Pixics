@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
@@ -18,6 +19,7 @@ public class PixicScreen extends JPanel {
 	
 	private static final long serialVersionUID = -5409316679593494707L;
 	private static DisplayMode dm = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+	private static Dimension monitorSize = Toolkit.getDefaultToolkit().getScreenSize();
 	
 	private final int MIN_PIXIC_SCALE = 1;
 	
@@ -203,6 +205,9 @@ public class PixicScreen extends JPanel {
         	for (int y = 0; y < screenPixics.sizeY(); y++) {
         		g.setColor(screenPixics.get(x, y).getColor());
         		g.fillRect(x * pixicScale, y * pixicScale, pixicScale, pixicScale);
+        		
+        		g.setColor(Color.BLUE);
+        		g.drawString("FPS: " + Engine.getFps(), 20, 20);
         	}
         }
     }
@@ -299,15 +304,31 @@ public class PixicScreen extends JPanel {
 		return pixicScale;
 	}
 	
-	public static int getMonitorWidth() {
+	public static int getTrueMonitorWidth() {
 		return dm.getWidth();
 	}
 	
-	public static int getMonitorHeight() {
+	public static int getTrueMonitorHeight() {
 		return dm.getHeight();
 	}
 	
+	public static Dimension getTrueMonitorSize() {
+		return new Dimension(getTrueMonitorWidth(), getTrueMonitorHeight());
+	}
+	
+	public static int getMonitorWidth() {
+		return monitorSize.width;
+	}
+	
+	public static int getMonitorHeight() {
+		return monitorSize.height;
+	}
+	
 	public static Dimension getMonitorSize() {
-		return new Dimension(getMonitorWidth(), getMonitorHeight());
+		return monitorSize;
+	}
+	
+	public static double getMonitorSizeToTrueSizeMultiplier() {
+		return (double) getTrueMonitorWidth() / (double) getMonitorHeight();
 	}
 }

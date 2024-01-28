@@ -14,9 +14,11 @@ public class Engine extends Thread {
 	
 	public boolean running = false;
 	
-	// private Logger log = new Logger();
+	private Logger log = new Logger();
 	
-	private int frameCap = 120;
+	private static int frameCap = 120;
+	private static int currentFrame = 0;
+	private static int fps = 0;
 	
 	private List<PixelScreen> pixelScreens = null;
 	private List<PixicScreen> pixicScreens = null;
@@ -33,6 +35,7 @@ public class Engine extends Thread {
 		long currentTime = System.currentTimeMillis();
 		long lastTime;
 		long sigmaRender = 0L;
+		long sigmaFps = 0L;
 		
 		while (running) {
 			lastTime = currentTime;
@@ -40,17 +43,31 @@ public class Engine extends Thread {
 			
 			long deltaTime = currentTime - lastTime;
 			sigmaRender += deltaTime;
+			int tempFps = 0;
 			
 			if (sigmaRender >= msPerRender) {
+				sigmaFps += sigmaRender;
 				frameRender();
+				tempFps++;
 				sigmaRender = 0L;
+				
+				if (sigmaFps >= 1000L) {
+					fps = tempFps;
+					sigmaFps = 0L;
+					tempFps = 0;
+				}
 			}
+			
+			
 			
 			engineCycle();
 		}
 	}
 	
 	public void frameRender() {
+		currentFrame++;
+		// TODO log.debug("Current Frame Render: " + currentFrame);
+		
 		// Deal with per frame code for PixelScreens
 		synchronized(pixelScreens) {
 			Iterator<PixelScreen> i = pixelScreens.iterator();
@@ -103,12 +120,20 @@ public class Engine extends Thread {
 		running = false;
 	}
 	
-	public void setFrameCap(int cap) {
+	public static void setFrameCap(int cap) {
 		frameCap = cap;
 	}
 	
-	public int getFrameCap() {
+	public static int getFrameCap() {
 		return frameCap;
+	}
+	
+	public static int getCurrentFrame() {
+		return currentFrame;
+	}
+	
+	public static int getFps() {
+		return fps;
 	}
 	
 	/**
