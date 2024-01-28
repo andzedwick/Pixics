@@ -1,7 +1,7 @@
 package com.pixics.main;
 
-import com.pixics.graphics.Screen;
-import com.pixics.graphics.Window;
+import com.pixics.graphics.PixelScreen;
+import com.pixics.graphics.PixicWindow;
 
 public class Application {
 	
@@ -14,6 +14,6 @@ public class Application {
 	}
 	
 	public Application() {
-		new Window(Screen.getMonitorWidth(), Screen.getMonitorHeight(), FRAME_TITLE, 10);
+		new PixicWindow(PixelScreen.getMonitorWidth(), PixelScreen.getMonitorHeight(), FRAME_TITLE, 10);
 	}
 }

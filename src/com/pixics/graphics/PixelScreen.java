@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import com.pixics.main.Logger;
 
-public class Screen extends JPanel {
+public class PixelScreen extends JPanel {
 	
 	private static final long serialVersionUID = -5409316679593494707L;
 	private static DisplayMode dm = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
@@ -26,11 +26,11 @@ public class Screen extends JPanel {
 	
 	private PixelArray2D screenPixels = null;
 	
-	public Screen(int width, int height) {
+	public PixelScreen(int width, int height) {
 		this(width, height, 1);
 	}
 	
-	public Screen(int width, int height, int pixelScale) {
+	public PixelScreen(int width, int height, int pixelScale) {
 		if (width < minWidth) {
 			width = minWidth;
 		}

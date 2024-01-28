@@ -5,17 +5,15 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-import com.pixics.main.Logger;
-
-public class Window {
+public class PixelWindow {
 	
 	private JFrame frame = null;
-	private Screen screen = null;
+	private PixelScreen screen = null;
 	
 	private int frameWidth, frameHeight, screenWidth, screenHeight, pixelScale;
 	private String frameTitle = "";
 	
-	public Window(int frameWidth, int frameHeight, String frameTitle, int screenWidth, int screenHeight, int pixelScale) {
+	public PixelWindow(int frameWidth, int frameHeight, String frameTitle, int screenWidth, int screenHeight, int pixelScale) {
 		this.frameWidth = frameWidth;
 		this.frameHeight = frameHeight;
 		this.frameTitle = frameTitle;
@@ -27,7 +25,7 @@ public class Window {
 		setupScreen();
 	}
 	
-	public Window(int frameWidth, int frameHeight, String frameTitle, int pixelScale) {
+	public PixelWindow(int frameWidth, int frameHeight, String frameTitle, int pixelScale) {
 		this.frameWidth = frameWidth;
 		this.frameHeight = frameHeight;
 		this.frameTitle = frameTitle;
@@ -54,7 +52,7 @@ public class Window {
 	private void setupScreen() {
 		if (frame == null) return;
 		
-		screen = new Screen(screenWidth, screenHeight, pixelScale);
+		screen = new PixelScreen(screenWidth, screenHeight, pixelScale);
 		frame.add(screen);
 		screen.repaint();
 	}
