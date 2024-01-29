@@ -1,10 +1,11 @@
 package com.pixic.graphics;
 
+import java.awt.Color;
+
 import javax.swing.JFrame;
 
 public class Window {
 	
-	private static final long serialVersionUID = -8737961432971490441L;
 	private int width, height;
 	private String title;
 	private JFrame frame;

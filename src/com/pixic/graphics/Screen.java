@@ -9,14 +9,17 @@ import java.util.Random;
 
 import com.pixic.main.Engine;
 import com.pixic.objects.PixicObject;
+import com.pixic.objects.PixicObjectType;
+import com.pixic.objects.Sand;
 
 public class Screen extends Canvas {
 	
 	private static final long serialVersionUID = 413692066054408408L;
 	private int width, height, pixicWidth, pixicHeight, pixicScale;
-	private int[] pixels;
+	private int fpsCounter, fps;
+	private long sigmaTime = 0L;
 	private PixicObject[] pixics;
-	private BufferedImage img;
+	private Render render;
 	
 	public Screen(int width, int height, int pixicScale) {
 		this.width = width;
@@ -49,34 +52,50 @@ public class Screen extends Canvas {
 		return pixicScale;
 	}
 	
+	public int getFps() {
+		return fps;
+	}
+	
+	public Render getRender() {
+		return render;
+	}
+	
 	public void render(long deltaTime) {
+		sigmaTime += deltaTime;
+		fpsCounter++;
+		
+		if (sigmaTime >= 1000L) {
+			fps = fpsCounter;
+			fpsCounter = 0;
+			sigmaTime = 0L;
+		}
+		
 		BufferStrategy strat = this.getBufferStrategy();
 		if (strat == null) {
 			createBufferStrategy(2);
 			return;
 		}
 		
+		
+		
 		for (int i = 0; i < pixics.length; i++) {
 			pixics[i].onRender(0L);
 		}
 		
 		Graphics g = strat.getDrawGraphics();
-		g.drawImage(img, 0, 0, width, height, null);
+		g.drawImage(render, 0, 0, width, height, null);
 		g.dispose();
 		strat.show();
-		
-		System.out.println("Rendering");
 	}
 	
 	private void init() {
-		img = new BufferedImage(pixicWidth, pixicHeight, BufferedImage.TYPE_INT_ARGB);
-		pixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
-		
+		render = new Render(pixicWidth, pixicHeight);
 		Random r = new Random();
 		
 		for (int i = 0; i < pixics.length; i++) {
-			pixics[i] = new PixicObject(this, pixels[i], PixicObject.DEFAULT_OBJECT_TYPE);
-			pixels[i] = r.nextInt(); // TODO - temp
+			pixics[i] = new PixicObject(this, Sand.getVariedSandColor(), PixicObjectType.SAND);
 		}
+		
+		render.draw(pixics);
 	}
 }
