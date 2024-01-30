@@ -5,6 +5,6 @@
  * @author andze
  *
  */
-module Pixics {
+module PixicEngine {
 	requires java.desktop;
 }
