@@ -1,7 +1,5 @@
 package com.pixic.graphics;
 
-import java.awt.Color;
-
 import javax.swing.JFrame;
 
 public class Window {
@@ -11,7 +9,7 @@ public class Window {
 	private JFrame frame;
 	private Screen screen;
 	
-	private static final int PIXIC_SCALE = 10;
+	private static final int PIXIC_SCALE = 2;
 	
 	public Window(int width, int height, String title) {
 		this.width = width;

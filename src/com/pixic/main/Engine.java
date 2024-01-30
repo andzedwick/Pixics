@@ -9,6 +9,10 @@ public class Engine extends Thread {
 	
 	private boolean running = false;
 	
+	private long fpsCap = 120;
+	private long fpsCapMsPerRender = 1000L / fpsCap;
+	private long sigmaTime = 0L;
+	
 	private Engine() {}
 	
 	public static Engine getInstance() {
@@ -34,17 +38,24 @@ public class Engine extends Thread {
 		while (running) {
 			lastTime = currentTime;
 			currentTime = System.currentTimeMillis();
+			
 			long deltaTime = currentTime - lastTime;
+			sigmaTime += deltaTime;
 			
 			tick(deltaTime);
+			
 			if (screen != null) {
-				screen.render(deltaTime);
+				if (sigmaTime >= fpsCapMsPerRender) {
+					screen.render(sigmaTime);
+					
+					sigmaTime = 0L;
+				}
 			}
 		}
 	}
 	
 	private void tick(long deltaMs) {
-		
+		screen.tick(deltaMs);
 	}
 	
 	public void setScreen(Screen screen) {

@@ -11,14 +11,16 @@ public class PixicObject {
 	
 	// The base of a PixicObject is the pixel
 	protected int pixel = 0;
-	
-	protected PixicObjectType objectType;
 	protected Screen parentScreen;
+	protected PixicObjectType objectType;
 	
-	public PixicObject(Screen parentScreen, int pixel, PixicObjectType objectType) {
+	private int location;
+	
+	public PixicObject(Screen parentScreen, int pixel, PixicObjectType objectType, int location) {
 		this.parentScreen = parentScreen;
 		this.pixel = pixel;
 		this.objectType = objectType;
+		this.location = location;
 	}
 	
 	public void setPixel(int pixel) {
@@ -27,6 +29,27 @@ public class PixicObject {
 	
 	public int getPixel() {
 		return pixel;
+	}
+	
+	/**
+	 * Generally should only be set by the parent screen
+	 * 
+	 * @param location
+	 */
+	public void setLocation(int location) {
+		this.location = location;
+	}
+	
+	public int getLocation() {
+		return location;
+	}
+	
+	public void setObjectType(PixicObjectType objectType) {
+		this.objectType = objectType;
+	}
+	
+	public PixicObjectType getObjectType() {
+		return objectType;
 	}
 	
 	/**
@@ -43,7 +66,7 @@ public class PixicObject {
 	 * 
 	 * @param msSinceLastRender
 	 */
-	public void onEngineCycle(long msSinceLastRender) {
+	public void onTick(long msSinceLastRender) {
 		
 	}
 }

@@ -1,5 +1,8 @@
 package com.pixic.main;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import com.pixic.graphics.Window;
 
 public class Application {
@@ -11,7 +14,8 @@ public class Application {
 	}
 	
 	public Application() {
-		new Window(800, 600, TITLE);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		new Window(screenSize.width, screenSize.height, TITLE);
 		Engine.getInstance().start();
 	}
 }
